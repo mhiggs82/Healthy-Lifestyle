@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Healthy Lifestyle Center & Deli</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f5f5f0;color:#1a1a1a;padding-bottom:220px}
+header{background:#2d6a4f;color:#fff;padding:16px;text-align:center}
+header h1{font-size:1.3rem;font-weight:700}
+header p{font-size:.8rem;opacity:.85;margin-top:2px}
+.hours{background:#1b4332;color:#b7e4c7;font-size:.75rem;padding:6px 16px;text-align:center}
+.section{margin:12px 8px 0}
+.section-title{background:#2d6a4f;color:#fff;padding:8px 12px;font-size:.9rem;font-weight:700;border-radius:6px 6px 0 0;text-transform:uppercase;letter-spacing:.05em}
+.menu-items{background:#fff;border-radius:0 0 6px 6px;overflow:hidden}
+.item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #eee;gap:8px}
+.item:last-child{border-bottom:none}
+.item-name{flex:1;font-size:.9rem;line-height:1.3}
+.item-sub{font-size:.75rem;color:#666;margin-top:2px}
+.item-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.price{font-size:.9rem;font-weight:600;color:#2d6a4f;white-space:nowrap}
+.add-btn{background:#2d6a4f;color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.add-btn:active{background:#1b4332}
+.size-btns{display:flex;gap:6px;flex-wrap:wrap}
+.size-btn{background:#e8f5e9;border:1.5px solid #2d6a4f;color:#2d6a4f;border-radius:16px;padding:4px 10px;font-size:.8rem;cursor:pointer;white-space:nowrap}
+.size-btn:active{background:#2d6a4f;color:#fff}
+/* Classics */
+.classics-grid{padding:10px 12px;background:#fff;border-radius:0 0 6px 6px}
+.classics-note{font-size:.8rem;color:#2d6a4f;font-weight:600;margin-bottom:8px}
+.classic-opt{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f0f0f0}
+.classic-opt:last-child{border-bottom:none}
+.classic-opt input{width:18px;height:18px;accent-color:#2d6a4f;cursor:pointer;flex-shrink:0}
+.classic-opt label{font-size:.88rem;cursor:pointer}
+.classics-add-btn{margin-top:10px;width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:6px;padding:10px;font-size:.9rem;font-weight:600;cursor:pointer}
+.classics-add-btn:disabled{background:#aaa;cursor:not-allowed}
+/* Cart */
+#cart-panel{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #2d6a4f;z-index:100;max-height:55vh;display:flex;flex-direction:column}
+#cart-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#2d6a4f;color:#fff}
+#cart-header h2{font-size:.95rem}
+#cart-toggle{background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;padding:2px 6px}
+#cart-body{overflow-y:auto;flex:1;padding:0 14px}
+.cart-empty{color:#999;font-size:.85rem;padding:10px 0;text-align:center}
+.cart-line{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid #f0f0f0;gap:8px}
+.cart-line:last-child{border-bottom:none}
+.cart-line-name{font-size:.85rem;flex:1;line-height:1.3}
+.cart-line-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.cart-line-price{font-size:.85rem;font-weight:600;color:#2d6a4f}
+.remove-btn{background:none;border:none;color:#c0392b;font-size:.9rem;cursor:pointer;padding:0 2px}
+#cart-footer{padding:10px 14px;border-top:1px solid #eee}
+#total-row{display:flex;justify-content:space-between;font-weight:700;font-size:1rem;margin-bottom:10px}
+#order-form{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+#order-form input,#order-form textarea{border:1.5px solid #ccc;border-radius:6px;padding:8px 10px;font-size:.88rem;width:100%;resize:none}
+#order-form input:focus,#order-form textarea:focus{outline:none;border-color:#2d6a4f}
+#checkout-btn{background:#25D366;color:#fff;border:none;border-radius:6px;padding:11px;width:100%;font-size:.95rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+#checkout-btn:active{background:#1ebe57}
+#new-order-btn{display:none;background:#2d6a4f;color:#fff;border:none;border-radius:6px;padding:10px;width:100%;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:6px}
+/* Confirmation banner */
+#confirm-banner{display:none;background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:10px 14px;font-size:.85rem;border-radius:6px;margin-bottom:8px;text-align:center}
+/* Modal */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}
+#modal-overlay.open{display:flex}
+#modal{background:#fff;border-radius:10px;width:100%;max-width:420px;max-height:85vh;overflow-y:auto}
+#modal-header{background:#2d6a4f;color:#fff;padding:14px 16px;border-radius:10px 10px 0 0;display:flex;justify-content:space-between;align-items:center}
+#modal-header h3{font-size:1rem}
+#modal-close{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer}
+#modal-body{padding:14px 16px}
+.modal-step{display:none}
+.modal-step.active{display:block}
+.step-title{font-size:.85rem;font-weight:700;color:#2d6a4f;margin-bottom:10px;text-transform:uppercase}
+.modal-size-btn{display:block;width:100%;text-align:left;background:#e8f5e9;border:2px solid #2d6a4f;color:#1a1a1a;border-radius:8px;padding:10px 14px;margin-bottom:8px;cursor:pointer;font-size:.9rem}
+.modal-size-btn:hover{background:#2d6a4f;color:#fff}
+.radio-opt{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0f0}
+.radio-opt:last-child{border-bottom:none}
+.radio-opt input{width:18px;height:18px;accent-color:#2d6a4f;cursor:pointer}
+.radio-opt label{font-size:.88rem;cursor:pointer}
+.check-opt{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0f0}
+.check-opt:last-child{border-bottom:none}
+.check-opt input{width:18px;height:18px;accent-color:#2d6a4f;cursor:pointer}
+.check-opt label{font-size:.88rem;cursor:pointer}
+#sides-note{font-size:.8rem;color:#666;margin-bottom:8px}
+.modal-nav{display:flex;gap:8px;margin-top:14px}
+.modal-btn{flex:1;border:none;border-radius:6px;padding:10px;font-size:.9rem;font-weight:600;cursor:pointer}
+.modal-btn-back{background:#f0f0f0;color:#333}
+.modal-btn-next{background:#2d6a4f;color:#fff}
+.modal-btn-next:disabled{background:#aaa;cursor:not-allowed}
+/* Saved Meals */
+.saved-meals-panel{padding:10px 12px;background:#fff;border-radius:0 0 6px 6px}
+.saved-meal-item{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.saved-meal-item:last-of-type{margin-bottom:0}
+.saved-meal-btn{flex:1;background:#e8f5e9;border:1.5px solid #2d6a4f;color:#1a1a1a;border-radius:8px;padding:10px 14px;text-align:left;cursor:pointer;font-size:.88rem;font-weight:600;line-height:1.3}
+.saved-meal-btn:active{background:#2d6a4f;color:#fff}
+.saved-meal-del{background:none;border:none;color:#c0392b;font-size:1.3rem;cursor:pointer;padding:0 4px;flex-shrink:0}
+.saved-meal-sub{font-size:.72rem;color:#555;font-weight:400;display:block;margin-top:2px}
+.save-order-btn{width:100%;background:#2d6a4f;color:#fff;border:none;border-radius:6px;padding:10px;font-size:.88rem;font-weight:600;cursor:pointer;margin-top:10px}
+.save-order-btn:active{background:#1b4332}
+.saved-empty{color:#999;font-size:.82rem;padding:6px 0;text-align:center;margin-bottom:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Healthy Lifestyle Center &amp; Deli</h1>
+  <p>#231 East Street South &bull; 4 Doors North Kelly's Lumber Yard</p>
+  <p style="margin-top:4px">1-242-676-3260 &bull; 1-242-533-6030</p>
+</header>
+<div class="hours">Mon&ndash;Fri &bull; Breakfast 7:30AM&ndash;11:00AM &bull; Lunch 11:30AM&ndash;5:00PM</div>
+
+<!-- SAVED MEALS -->
+<div class="section">
+  <div class="section-title">&#11088; Saved Meals</div>
+  <div class="saved-meals-panel">
+    <div id="saved-meals-list"></div>
+    <button class="save-order-btn" onclick="saveCurrentOrder()">+ Save Current Cart as Meal</button>
+  </div>
+</div>
+
+<!-- BREAKFAST -->
+<div class="section">
+  <div class="section-title">Breakfast</div>
+  <div class="menu-items" id="breakfast-items"></div>
+</div>
+
+<!-- LUNCH -->
+<div class="section">
+  <div class="section-title">Lunch</div>
+  <div class="menu-items">
+    <div class="item">
+      <div>
+        <div class="item-name">Lunch Plate</div>
+        <div class="item-sub">Large $13.20 (2 sides) &bull; Small $11.00 (1 side) &bull; Mini $9.90 (no sides)</div>
+      </div>
+      <button class="add-btn" onclick="openLunchModal()">+</button>
+    </div>
+    <div class="item">
+      <div>
+        <div class="item-name">Combination Plate Extra</div>
+      </div>
+      <div class="item-right">
+        <span class="price">$8.00</span>
+        <button class="add-btn" onclick="addSimple('Combination Plate Extra',8)">+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VEGETARIAN MEAT -->
+<div class="section">
+  <div class="section-title">Vegetarian Meat</div>
+  <div class="menu-items" id="vegmeat-items"></div>
+</div>
+
+<!-- BURGERS WRAPS SIDES -->
+<div class="section">
+  <div class="section-title">Burgers, Wraps &amp; Sides</div>
+  <div class="menu-items" id="burgers-items"></div>
+</div>
+
+<!-- DRINKS -->
+<div class="section">
+  <div class="section-title">Drinks</div>
+  <div class="menu-items" id="drinks-items"></div>
+</div>
+
+<!-- SOUP -->
+<div class="section">
+  <div class="section-title">Soup of the Day</div>
+  <div class="menu-items">
+    <div class="item">
+      <div>
+        <div class="item-name">Pumpkin Soup</div>
+      </div>
+      <div class="item-right">
+        <div class="size-btns">
+          <button class="size-btn" onclick="addSimple('Pumpkin Soup (Large)',13.20)">Large $13.20</button>
+          <button class="size-btn" onclick="addSimple('Pumpkin Soup (Small)',11.00)">Small $11.00</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLASSICS -->
+<div class="section">
+  <div class="section-title">Classics — Any Two for $5.50</div>
+  <div class="classics-grid">
+    <div class="classics-note">Select exactly 2 items:</div>
+    <div id="classics-list"></div>
+    <button class="classics-add-btn" id="classics-add" onclick="addClassics()" disabled>Add Combo to Cart ($5.50)</button>
+  </div>
+</div>
+
+<!-- DESSERTS -->
+<div class="section">
+  <div class="section-title">Desserts</div>
+  <div class="menu-items" id="desserts-items"></div>
+</div>
+
+<!-- CART -->
+<div id="cart-panel">
+  <div id="cart-header">
+    <h2>Your Order (<span id="cart-count">0</span> items)</h2>
+    <button id="cart-toggle" onclick="toggleCart()">&#8963;</button>
+  </div>
+  <div id="cart-body">
+    <p class="cart-empty" id="cart-empty">No items yet. Tap + to add.</p>
+    <div id="cart-lines"></div>
+  </div>
+  <div id="cart-footer">
+    <div id="confirm-banner">Your order has been sent to WhatsApp. Complete it there.</div>
+    <div id="total-row"><span>Total</span><span id="total-amt">$0.00</span></div>
+    <div id="order-form">
+      <input type="text" id="cust-name" placeholder="Your name (required)" />
+      <input type="tel" id="cust-phone" placeholder="Phone number (required)" />
+      <textarea id="cust-notes" rows="2" placeholder="Additional notes (optional)"></textarea>
+    </div>
+    <button id="checkout-btn" onclick="sendWhatsApp()">
+      <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.103 1.535 5.816L.057 23.903l6.273-1.646A11.934 11.934 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.375l-.358-.213-3.726.977.995-3.632-.234-.375A9.818 9.818 0 1112 21.818z"/></svg>
+      Send Order via WhatsApp
+    </button>
+    <button id="new-order-btn" onclick="startNewOrder()">Start New Order</button>
+  </div>
+</div>
+
+<!-- LUNCH MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <div id="modal-header">
+      <h3>Build Your Lunch Plate</h3>
+      <button id="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div id="modal-body">
+      <!-- Step 1: Size -->
+      <div class="modal-step active" id="step1">
+        <div class="step-title">Step 1: Choose Size</div>
+        <button class="modal-size-btn" onclick="pickSize('Large',13.20,2)">Large &mdash; $13.20 &bull; 2 sides</button>
+        <button class="modal-size-btn" onclick="pickSize('Small',11.00,1)">Small &mdash; $11.00 &bull; 1 side</button>
+        <button class="modal-size-btn" onclick="pickSize('Mini',9.90,0)">Mini &mdash; $9.90 &bull; No sides</button>
+      </div>
+      <!-- Step 2: Main -->
+      <div class="modal-step" id="step2">
+        <div class="step-title">Step 2: Choose a Main</div>
+        <div id="mains-list"></div>
+        <div class="modal-nav">
+          <button class="modal-btn modal-btn-back" onclick="goStep(1)">Back</button>
+          <button class="modal-btn modal-btn-next" id="next2" onclick="goStep(3)" disabled>Next</button>
+        </div>
+      </div>
+      <!-- Step 3: Sides -->
+      <div class="modal-step" id="step3">
+        <div class="step-title">Step 3: Choose Sides</div>
+        <div id="sides-note"></div>
+        <div id="sides-list"></div>
+        <div class="modal-nav">
+          <button class="modal-btn modal-btn-back" onclick="goStep(2)">Back</button>
+          <button class="modal-btn modal-btn-next" id="add-lunch-btn" onclick="addLunchToCart()">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MENU = {
+  breakfast:[
+    {n:'Johnny Cake',p:2.00},
+    {n:'Banana Pancake',p:5.00},
+    {n:'Extra Meats',p:3.00},
+    {n:"Stew Fish & Chick'n Souse",p:5.00},
+    {n:'Breakfast Burritos',p:5.00},
+    {n:'Hot Tea',p:5.00},
+    {n:'Home Fried Potatoes',p:5.00},
+    {n:'Oatmeal with Berries',p:5.00},
+    {n:'Breakfast Sandwich',p:5.00}
+  ],
+  vegmeat:[
+    {n:'Jackfruit Nuggets',p:10.00},
+    {n:'Ackee and Buttered Beans',p:11.00},
+    {n:"Stir Fry Chick'n Strips",p:10.00},
+    {n:'Coconut Rundown',p:14.00}
+  ],
+  burgers:[
+    {n:'Impossible Burger',p:12.99},
+    {n:'Cut Potato Wedges',p:5.00},
+    {n:'Black Bean Corn & Quinoa Burger',p:11.00},
+    {n:'Fri Pat Burger',p:8.48},
+    {n:'Fresh Cut French Fries',p:4.50},
+    {n:'Vegan Meat Sides',p:8.00},
+    {n:'Veggie Wrap',special:'veggie-wrap'},
+    {n:'Hot Patties',p:4.00},
+    {n:'Salad',p:4.00}
+  ],
+  drinks:[
+    {n:'Pure Alkaline Water',p:2.25},
+    {n:'Fresh Beets Juice',p:5.00},
+    {n:'Fresh Carrot Juice',p:5.00},
+    {n:'Purified Water',p:1.18},
+    {n:'Reed Ginger Beer',p:5.00},
+    {n:'Ginseng Up',p:5.00},
+    {n:'Butterfly Scotch Beer',p:5.00},
+    {n:'Strawberry Lemonade',p:5.00},
+    {n:'Ginger Lemonade',p:5.00},
+    {n:'Very Berry Lime',p:5.00},
+    {n:'Tamarind',p:5.00},
+    {n:'Delughe / Sour Sop',p:5.00}
+  ],
+  classics:[
+    'Pirigin Peas and Rice','Fried Dumpling','Garden Salad','Mac and Cheese',
+    'Kale and Mushrooms','Coleslaw','Potato Salad','Rice and Peas','Steamed Vegetables'
+  ],
+  desserts:[
+    {n:'Coconut or Pineapple Tart',p:5.00},
+    {n:'Sugar Free Delights',p:5.00},
+    {n:'Vegan Delights',p:5.00}
+  ]
+};
+
+const MAINS = ['Pirigin Peas and Rice','Fried Dumpling','Quinoa and Vegetables'];
+const SIDES = ['Garden Salad','Mac and Cheese','Kale and Mushrooms','Coleslaw','Potato Salad'];
+
+let cart = [];
+let cartOpen = true;
+let lunchChoice = {size:'',price:0,sides:0,main:'',sidesPicked:[]};
+
+function fmt(n){return '$'+n.toFixed(2);}
+
+function renderSection(items,containerId){
+  const el = document.getElementById(containerId);
+  items.forEach(item=>{
+    if(item.special==='veggie-wrap'){
+      el.innerHTML += `<div class="item"><div class="item-name">Veggie Wrap</div><div class="item-right"><div class="size-btns"><button class="size-btn" onclick="addSimple('Veggie Wrap (Small)',8.80)">Small $8.80</button><button class="size-btn" onclick="addSimple('Veggie Wrap (Large)',11.20)">Large $11.20</button></div></div></div>`;
+    } else {
+      el.innerHTML += `<div class="item"><span class="item-name">${item.n}</span><div class="item-right"><span class="price">${fmt(item.p)}</span><button class="add-btn" onclick="addSimple('${item.n.replace(/'/g,"\\'")}',${item.p})">+</button></div></div>`;
+    }
+  });
+}
+
+function renderClassics(){
+  const el = document.getElementById('classics-list');
+  MENU.classics.forEach((c,i)=>{
+    el.innerHTML += `<div class="classic-opt"><input type="checkbox" id="cl${i}" value="${c}" onchange="classicChange()"><label for="cl${i}">${c}</label></div>`;
+  });
+}
+
+function classicChange(){
+  const checked = [...document.querySelectorAll('#classics-list input:checked')];
+  const all = [...document.querySelectorAll('#classics-list input')];
+  const btn = document.getElementById('classics-add');
+  if(checked.length>=2){
+    all.forEach(x=>{ if(!x.checked) x.disabled=true; });
+    btn.disabled=false;
+  } else {
+    all.forEach(x=>x.disabled=false);
+    btn.disabled=true;
+  }
+}
+
+function addClassics(){
+  const checked = [...document.querySelectorAll('#classics-list input:checked')];
+  if(checked.length<2) return;
+  const names = checked.map(x=>x.value);
+  addToCart(`Classics Combo: ${names[0]} + ${names[1]}`,5.50);
+  document.querySelectorAll('#classics-list input').forEach(x=>{x.checked=false;x.disabled=false;});
+  document.getElementById('classics-add').disabled=true;
+}
+
+function addSimple(name,price){
+  addToCart(name,price);
+}
+
+function addToCart(name,price){
+  cart.push({name,price});
+  renderCart();
+}
+
+function removeFromCart(i){
+  cart.splice(i,1);
+  renderCart();
+}
+
+function renderCart(){
+  const lines = document.getElementById('cart-lines');
+  const empty = document.getElementById('cart-empty');
+  const count = document.getElementById('cart-count');
+  const totalEl = document.getElementById('total-amt');
+  count.textContent = cart.length;
+  if(cart.length===0){
+    empty.style.display='block';
+    lines.innerHTML='';
+    totalEl.textContent='$0.00';
+    return;
+  }
+  empty.style.display='none';
+  lines.innerHTML = cart.map((it,i)=>`
+    <div class="cart-line">
+      <span class="cart-line-name">${it.name}</span>
+      <div class="cart-line-right">
+        <span class="cart-line-price">${fmt(it.price)}</span>
+        <button class="remove-btn" onclick="removeFromCart(${i})">&#x2715;</button>
+      </div>
+    </div>`).join('');
+  const total = cart.reduce((s,it)=>s+it.price,0);
+  totalEl.textContent = fmt(total);
+}
+
+function toggleCart(){
+  cartOpen = !cartOpen;
+  const body = document.getElementById('cart-body');
+  const footer = document.getElementById('cart-footer');
+  const btn = document.getElementById('cart-toggle');
+  body.style.display = cartOpen ? 'block' : 'none';
+  footer.style.display = cartOpen ? 'block' : 'none';
+  btn.textContent = cartOpen ? '⌃' : '⌄';
+}
+
+function sendWhatsApp(){
+  const name = document.getElementById('cust-name').value.trim();
+  if(!name){alert('Please enter your name.');document.getElementById('cust-name').focus();return;}
+  const phone = document.getElementById('cust-phone').value.trim();
+  if(!phone){alert('Please enter your phone number.');document.getElementById('cust-phone').focus();return;}
+  if(cart.length===0){alert('Your cart is empty.');return;}
+  const total = cart.reduce((s,it)=>s+it.price,0);
+  const notes = document.getElementById('cust-notes').value.trim();
+  let msg = `Hello! I'd like to place an order.\n\nName: ${name}\nPhone: ${phone}\n\nOrder:\n`;
+  cart.forEach(it=>{ msg += `• ${it.name} — ${fmt(it.price)}\n`; });
+  msg += `\nTotal: ${fmt(total)}`;
+  if(notes) msg += `\n\nNotes: ${notes}`;
+  const url = 'https://wa.me/66993726882?text=' + encodeURIComponent(msg);
+  window.open(url,'_blank');
+  document.getElementById('confirm-banner').style.display='block';
+  document.getElementById('new-order-btn').style.display='block';
+  document.getElementById('checkout-btn').style.display='none';
+}
+
+function startNewOrder(){
+  cart=[];
+  renderCart();
+  document.getElementById('cust-name').value='';
+  document.getElementById('cust-phone').value='';
+  document.getElementById('cust-notes').value='';
+  document.getElementById('confirm-banner').style.display='none';
+  document.getElementById('new-order-btn').style.display='none';
+  document.getElementById('checkout-btn').style.display='flex';
+}
+
+// Lunch Modal
+function openLunchModal(){
+  lunchChoice={size:'',price:0,sides:0,main:'',sidesPicked:[]};
+  goStep(1);
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+function goStep(n){
+  document.querySelectorAll('.modal-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  if(n===2) buildMainsList();
+  if(n===3) buildSidesList();
+}
+function pickSize(size,price,sides){
+  lunchChoice.size=size; lunchChoice.price=price; lunchChoice.sides=sides;
+  goStep(2);
+}
+function buildMainsList(){
+  const el = document.getElementById('mains-list');
+  el.innerHTML = MAINS.map((m,i)=>`<div class="radio-opt"><input type="radio" name="lunch-main" id="m${i}" value="${m}" onchange="mainPicked()"><label for="m${i}">${m}</label></div>`).join('');
+  document.getElementById('next2').disabled=true;
+  if(lunchChoice.main){
+    const r = el.querySelector(`input[value="${lunchChoice.main}"]`);
+    if(r){r.checked=true; document.getElementById('next2').disabled=false;}
+  }
+  document.getElementById('next2').textContent = lunchChoice.sides===0 ? 'Add to Cart' : 'Next';
+  document.getElementById('next2').onclick = lunchChoice.sides===0 ? addLunchNoSides : ()=>goStep(3);
+}
+function mainPicked(){
+  const r = document.querySelector('input[name="lunch-main"]:checked');
+  lunchChoice.main = r ? r.value : '';
+  document.getElementById('next2').disabled = !lunchChoice.main;
+}
+function addLunchNoSides(){
+  if(!lunchChoice.main){alert('Please choose a main.');return;}
+  addToCart(`Lunch Plate (${lunchChoice.size}): ${lunchChoice.main}`,lunchChoice.price);
+  closeModal();
+}
+function buildSidesList(){
+  const el = document.getElementById('sides-list');
+  const max = lunchChoice.sides;
+  document.getElementById('sides-note').textContent = `Choose ${max} side${max>1?'s':''}:`;
+  el.innerHTML = SIDES.map((s,i)=>`<div class="check-opt"><input type="checkbox" id="s${i}" value="${s}" onchange="sidesPicked()"><label for="s${i}">${s}</label></div>`).join('');
+}
+function sidesPicked(){
+  const checked = [...document.querySelectorAll('#sides-list input:checked')];
+  const all = [...document.querySelectorAll('#sides-list input')];
+  const max = lunchChoice.sides;
+  lunchChoice.sidesPicked = checked.map(x=>x.value);
+  if(checked.length>=max) all.forEach(x=>{ if(!x.checked) x.disabled=true; });
+  else all.forEach(x=>x.disabled=false);
+}
+function addLunchToCart(){
+  if(!lunchChoice.main){alert('Please go back and choose a main.');return;}
+  if(lunchChoice.sides>0 && lunchChoice.sidesPicked.length<lunchChoice.sides){
+    alert(`Please choose ${lunchChoice.sides} side${lunchChoice.sides>1?'s':''}.`);return;
+  }
+  let desc = `Lunch Plate (${lunchChoice.size}): ${lunchChoice.main}`;
+  if(lunchChoice.sidesPicked.length) desc += ` + ${lunchChoice.sidesPicked.join(', ')}`;
+  addToCart(desc,lunchChoice.price);
+  closeModal();
+}
+
+// Saved Meals
+const PRESET_MEALS = [
+  {
+    name:'Breakfast Special',
+    sub:'Banana Pancake + Carrot Juice',
+    items:[{name:'Banana Pancake',price:5.00},{name:'Fresh Carrot Juice',price:5.00}]
+  },
+  {
+    name:'Veggie Burger Meal',
+    sub:'Impossible Burger + Fries + Alkaline Water',
+    items:[{name:'Impossible Burger',price:12.99},{name:'Fresh Cut French Fries',price:4.50},{name:'Pure Alkaline Water',price:2.25}]
+  },
+  {
+    name:'Lunch Plate (Large)',
+    sub:'Pirigin Peas & Rice + Garden Salad + Mac and Cheese',
+    items:[{name:'Lunch Plate (Large): Pirigin Peas and Rice + Garden Salad, Mac and Cheese',price:13.20}]
+  },
+  {
+    name:'Jackfruit Combo',
+    sub:'Jackfruit Nuggets + Ginger Lemonade',
+    items:[{name:'Jackfruit Nuggets',price:10.00},{name:'Ginger Lemonade',price:5.00}]
+  }
+];
+
+function getUserMeals(){
+  try{ return JSON.parse(localStorage.getItem('savedMeals')||'[]'); }catch(e){ return []; }
+}
+
+function renderSavedMeals(){
+  const userMeals = getUserMeals();
+  const el = document.getElementById('saved-meals-list');
+  const allMeals = [...PRESET_MEALS, ...userMeals];
+  if(allMeals.length===0){
+    el.innerHTML='<p class="saved-empty">No saved meals yet.</p>';
+    return;
+  }
+  el.innerHTML = allMeals.map((m,i)=>{
+    const isUser = i >= PRESET_MEALS.length;
+    const userIdx = i - PRESET_MEALS.length;
+    const subHtml = m.sub ? `<span class="saved-meal-sub">${m.sub}</span>` : '';
+    const delBtn = isUser ? `<button class="saved-meal-del" onclick="deleteSavedMeal(${userIdx})" title="Remove">&#x2715;</button>` : '';
+    return `<div class="saved-meal-item">
+      <button class="saved-meal-btn" onclick='applySavedMeal(${JSON.stringify(m.items)})'>${m.name}${subHtml}</button>
+      ${delBtn}
+    </div>`;
+  }).join('');
+}
+
+function applySavedMeal(items){
+  items.forEach(it=>addToCart(it.name,it.price));
+  if(!cartOpen) toggleCart();
+  document.getElementById('cart-panel').scrollIntoView({behavior:'smooth'});
+}
+
+function saveCurrentOrder(){
+  if(cart.length===0){alert('Your cart is empty. Add items first.');return;}
+  const name = prompt('Name this saved meal (e.g. "My Usual"):');
+  if(!name||!name.trim()) return;
+  const sub = cart.map(it=>it.name).join(', ').slice(0,60);
+  const meals = getUserMeals();
+  meals.push({name:name.trim(), sub, items:cart.map(it=>({name:it.name,price:it.price}))});
+  localStorage.setItem('savedMeals',JSON.stringify(meals));
+  renderSavedMeals();
+  alert('Meal saved!');
+}
+
+function deleteSavedMeal(i){
+  if(!confirm('Remove this saved meal?')) return;
+  const meals = getUserMeals();
+  meals.splice(i,1);
+  localStorage.setItem('savedMeals',JSON.stringify(meals));
+  renderSavedMeals();
+}
+
+// Init
+renderSection(MENU.breakfast,'breakfast-items');
+renderSection(MENU.vegmeat,'vegmeat-items');
+renderSection(MENU.burgers,'burgers-items');
+renderSection(MENU.drinks,'drinks-items');
+renderSection(MENU.desserts,'desserts-items');
+renderClassics();
+renderCart();
+renderSavedMeals();
+
+document.getElementById('modal-overlay').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+</script>
+</body>
+</html>
